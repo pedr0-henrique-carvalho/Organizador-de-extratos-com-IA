@@ -38,8 +38,11 @@ Para rodar a aplicação, utilize o comando:
 ## Funcionalidades
 
 Leitura de Imagens: Upload de fotos de notas e extratos.
+
 Processamento via IA: O Google Gemini analisa a imagem e extrai valores, datas e itens.
+
 Categorização Automática: Classifica os gastos (Ex: Alimentação, Lazer, Saúde).
+
 Dashboard Visual: Gráficos interativos que mostram a distribuição dos seus gastos.
 
 ## Tecnologias Utilizadas
