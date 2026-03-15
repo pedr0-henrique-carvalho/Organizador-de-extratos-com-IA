@@ -48,5 +48,3 @@ Backend: Node.js / Express
 Inteligência Artificial: Google Gemini API (Generative AI)
 Banco de Dados: SQLite (arquivo financeiro.db)
 Frontend: HTML5, CSS3 (Flexbox/Grid) e JavaScript
-
-Tecnologias Utilizadas
