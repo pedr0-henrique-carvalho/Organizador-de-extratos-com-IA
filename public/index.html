@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Organizador de Extratos com IA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 850px;
+            margin: 32px auto;
+            background: #181A1B;
+            color: #ECECEC;
+            padding: 32px;
+        }
+
+        .card {
+            background: #23272A;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            color: #F5C518;
+            text-align: center;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 28px;
+        }
+
+        h3 {
+            color: #ECECEC;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+        }
+
+        .flex-container {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #chart-container {
+            width: 320px;
+            height: 320px;
+            background: #202225;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #mensagem {
+            font-weight: bold;
+            text-align: center;
+            margin: 12px 0;
+            color: #F5C518;
+        }
+
+        /* Estilização dos Botões */
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            background: linear-gradient(90deg, #F5C518 0%, #FF9800 100%);
+            color: #181A1B;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #FF9800 0%, #F5C518 100%);
+            transform: translateY(-1px);
+        }
+
+        /* Botão Escolher Arquivo Customizado */
+        .custom-file-label {
+            background: #202225;
+            color: #ECECEC;
+            border: 1px solid #444;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .custom-file-label:hover {
+            border-color: #F5C518;
+            background: #2c2f33;
+        }
+
+        .file-selected {
+            border-color: #4CAF50 !important;
+            color: #4CAF50 !important;
+        }
+
+        #listaGastos>div {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+            font-size: 1.05em;
+        }
+
+        #listaGastos>div:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 700px) {
+            .flex-container {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            #chart-container {
+                width: 100%;
+                height: 280px;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .custom-file-label {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Organizador de Extratos</h1>
+
+    <div class="card">
+        <form id="uploadForm">
+            <div class="btn-container">
+                <input type="file" name="nota" id="nota" accept="image/*" required style="display: none;">
+                <label for="nota" class="custom-file-label" id="fileLabel">
+                    📁 Escolher Ficheiro
+                </label>
+                <button type="submit">Processar com IA</button>
+            </div>
+            <a href="https://www.linkedin.com/in/pedro-h-carvalho-cabreira-de-mello-8a6291347" target="_blank"
+                class="creditos-btn">Créditos</a>
+            <style>
+                .creditos-btn {
+                    position: absolute;
+                    top: 24px;
+                    right: 32px;
+                    background: #23272A;
+                    color: #F5C518;
+                    border: 1px solid #333;
+                    border-radius: 6px;
+                    padding: 7px 18px;
+                    font-size: 0.97rem;
+                    font-weight: 500;
+                    text-decoration: none;
+                    opacity: 0.75;
+                    transition: opacity 0.2s, border-color 0.2s, background 0.2s;
+                    z-index: 10;
+                }
+
+                .creditos-btn:hover {
+                    opacity: 1;
+                    border-color: #F5C518;
+                    background: #202225;
+                }
+
+                @media (max-width: 700px) {
+                    .creditos-btn {
+                        top: 12px;
+                        right: 12px;
+                        padding: 7px 12px;
+                        font-size: 0.93rem;
+                    }
+                }
+            </style>
+        </form>
+        <div id="mensagem"></div>
+    </div>
+
+    <div class="flex-container">
+        <div class="card" id="chart-container">
+            <!-- Caixa de diálogo de instruções -->
+            <div id="dialogoInstrucoes"
+                style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(24,26,27,0.92); z-index:9999; align-items:center; justify-content:center;">
+                <div
+                    style="background:#23272A; color:#ECECEC; max-width:370px; padding:32px 24px 24px 24px; border-radius:14px; box-shadow:0 8px 32px rgba(0,0,0,0.35); position:relative; text-align:left;">
+                    <button id="fecharDialogo"
+                        style="position:absolute; top:12px; right:16px; background:none; border:none; color:#f51818; font-size:1.5rem; cursor:pointer;">&times;</button>
+                    <h2 style="color:#F5C518; margin-top:0; font-size:1.3rem;">Como usar o Organizador</h2>
+                    <ol style="margin:18px 0 0 18px; padding:0; font-size:1.05em;">
+                        <li>Clique em <b>Escolher Ficheiro</b> e selecione uma foto do seu extrato bancário ou nota
+                            fiscal.</li>
+                        <li>Clique em <b>Processar com IA</b> para enviar a imagem.</li>
+                        <li>Aguarde a análise automática. Os gastos serão organizados por categoria.</li>
+                        <li>Veja o resumo visual no gráfico e a lista detalhada ao lado.</li>
+                    </ol>
+                    <p style="margin-top:18px; font-size:0.97em; color:#aaa;">Suas informações são processadas
+                        localmente e não são compartilhadas.</p>
+                </div>
+            </div>
+            <script>
+                window.addEventListener('DOMContentLoaded', () => {
+                    const dialogo = document.getElementById('dialogoInstrucoes');
+                    const jaViu = localStorage.getItem('instrucoesVistas');
+                    if (!jaViu) {
+                        dialogo.style.display = 'flex';
+                    }
+                    document.getElementById('fecharDialogo').onclick = () => {
+                        dialogo.style.display = 'none';
+                        localStorage.setItem('instrucoesVistas', '1');
+                    };
+                });
+            </script>
+            <canvas id="meuGrafico"></canvas>
+        </div>
+
+        <div class="card" style="flex: 1; min-width: 300px;">
+            <h3>Resumo por Categoria</h3>
+            <div id="listaGastos"></div>
+        </div>
+    </div>
+
+    <script>
+        let grafico;
+
+        // Listener para mudar o texto do botão quando escolher arquivo
+        document.getElementById('nota').onchange = function () {
+            const label = document.getElementById('fileLabel');
+            if (this.files && this.files.length > 0) {
+                label.innerText = "✅ Nota Selecionada";
+                label.classList.add('file-selected');
+            }
+        };
+
+        async function carregarDados() {
+            try {
+                const res = await fetch('/gastos');
+                const dados = await res.json();
+
+                const lista = document.getElementById('listaGastos');
+                lista.innerHTML = '';
+                const labels = [];
+                const valores = [];
+
+                dados.forEach(gasto => {
+                    labels.push(gasto.categoria);
+                    valores.push(gasto.total);
+
+                    const item = document.createElement('div');
+                    item.innerHTML = `<b style="color: #ECECEC">${gasto.categoria}</b> <span style="color: #F5C518">R$ ${gasto.total.toFixed(2)}</span>`;
+                    lista.appendChild(item);
+                });
+
+                const ctx = document.getElementById('meuGrafico').getContext('2d');
+                if (grafico) { grafico.destroy(); }
+
+                grafico = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: valores,
+                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#ECECEC', font: { size: 14 } }
+                            }
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error("Erro ao carregar dados:", err);
+            }
+        }
+
+        document.getElementById('uploadForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('mensagem');
+            const label = document.getElementById('fileLabel');
+
+            msg.innerText = "⏳ IA analisando a nota... aguarde.";
+            msg.style.color = "#F5C518";
+
+            const formData = new FormData(e.target);
+            try {
+                const res = await fetch('/upload', { method: 'POST', body: formData });
+                const resultado = await res.json();
+
+                if (resultado.mensagem === "Sucesso!") {
+                    msg.innerText = "✅ Nota processada e salva!";
+                    msg.style.color = "#4CAF50";
+                    // Resetar o botão de arquivo
+                    label.innerText = "📁 Escolher Ficheiro";
+                    label.classList.remove('file-selected');
+                    e.target.reset();
+                    carregarDados();
+                }
+            } catch (err) {
+                msg.innerText = "❌ Erro ao enviar.";
+                msg.style.color = "#FF5252";
+            }
+        };
+
+        carregarDados();
+    </script>
+</body>
+
+</html>
