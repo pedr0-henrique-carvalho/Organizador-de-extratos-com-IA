@@ -1,6 +1,6 @@
 # Organizador de Extratos com IA
 
-Uma aplicação inteligente que utiliza a **API do Google Gemini** para processar imagens (extratos, notas fiscais, comprovantes) 
+Uma aplicação inteligente que utiliza a **API do Google Gemini** para processar imagens (extratos, notas fiscais, comprovantes)
 e transformar dados brutos em um dashboard financeiro com gráficos.
 
 ---
@@ -33,7 +33,7 @@ Certifique-se de ter o Node.js instalado. No terminal do VS Code, rode:
 ### 4. Iniciar o Servidor
 Para rodar a aplicação, utilize o comando:
 
-**``node server.js``**
+**`node server.js`**
 
 ## Funcionalidades
 
