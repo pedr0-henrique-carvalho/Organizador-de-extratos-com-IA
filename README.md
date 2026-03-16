@@ -7,7 +7,7 @@ e transformar dados brutos em um dashboard financeiro com gráficos.
 
 ## Como configurar o projeto 
 
-Como este projeto utiliza dados sensíveis (sua chave de API), o arquivo `.env` não é enviado para o GitHub. 
+Como este projeto utiliza dados sensíveis (sua chave de API), o arquivo `.env` não é enviado para o GitHub.
 Siga estas etapas para rodar o projeto na sua máquina:
 
 ### 1. Obter sua Chave de API do Google
