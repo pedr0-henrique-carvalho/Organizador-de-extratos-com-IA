@@ -1,6 +1,6 @@
 # Organizador de Extratos com IA
 
-Uma aplicação inteligente que utiliza a **API do Google Gemini** para processar imagens (extratos, notas fiscais, comprovantes) 
+Uma aplicação inteligente que utiliza a **API do Google Gemini** para processar imagens (extratos, notas fiscais, comprovantes)
 e transformar dados brutos em um dashboard financeiro com gráficos.
 
 ---
@@ -49,5 +49,5 @@ Dashboard Visual: Gráficos interativos que mostram a distribuição dos seus ga
 
 Backend: Node.js / Express
 Inteligência Artificial: Google Gemini API (Generative AI)
-Banco de Dados: SQLite (arquivo financeiro.db)
-Frontend: HTML5, CSS3 (Flexbox/Grid) e JavaScript
+- Banco de Dados: SQLite (arquivo financeiro.db)
+- Frontend: HTML5, CSS3 (Flexbox/Grid) e JavaScript
